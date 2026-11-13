@@ -1,32 +1,103 @@
-### Archivo de pruebas · reemplazá las rutas por las de tu enunciado
-### En IntelliJ: abrí este archivo y tocá el ▶ verde de cada petición.
-
 @base = http://localhost:8080/api
 
-### Listar
-GET {{base}}/recursos
+### Listar todos los libros
+GET {{base}}/libros
 
-### Crear
-POST {{base}}/recursos
+### Crear un libro
+POST {{base}}/libros
 Content-Type: application/json
 
 {
-  "campo1": "valor",
-  "campo2": "valor",
-  "campo3": "valor"
+  "titulo": "El Principito",
+  "autor": "Antoine de Saint-Exupéry",
+  "isbn": "9788498383621"
 }
 
-### Buscar por id
-GET {{base}}/recursos/1
-
-### Error de validación (400)
-POST {{base}}/recursos
+### Buscar libro por ID
+GET {{base}}/libros/1
+### Actualizar un libro
+PUT {{base}}/libros/1
 Content-Type: application/json
 
-{ "campo1": "" }
+{
+  "titulo": "El Principito - Edición Especial",
+  "autor": "Antoine de Saint-Exupéry",
+  "isbn": "9780156012195"
+}
+### Eliminar un libro
+DELETE {{base}}/libros/1
 
-### Cambiar estado
-PATCH {{base}}/otro-recurso/1/estado
+### Listar todos los socios
+GET {{base}}/socios
+
+### Crear un socio
+POST {{base}}/socios
 Content-Type: application/json
 
-{ "estado": "OTRO_ESTADO" }
+{
+  "nombre": "Juan Perez",
+  "email": "juan@gmail.com"
+}
+
+### Buscar socio por ID
+GET {{base}}/socios/1
+
+### Actualizar socio
+PUT {{base}}/socios/1
+Content-Type: application/json
+
+{
+  "nombre": "Juan Perez Actualizado",
+  "email": "juanactualizado@gmail.com"
+}
+
+### Eliminar socio
+DELETE {{base}}/socios/1
+### Listar todos los socios
+GET {{base}}/socios
+### Crear un préstamo
+POST {{base}}/prestamos
+Content-Type: application/json
+
+{
+  "libroId": 1,
+  "socioId": 1,
+  "fechaDevolucion": "2026-11-20"
+}
+
+### Listar todos los préstamos
+GET {{base}}/prestamos
+
+### Listar préstamos por estado
+GET {{base}}/prestamos?estado=DEVUELTO
+
+### Registrar devolución de un préstamo
+PUT {{base}}/prestamos/2/devolver
+### Listar préstamos activos
+GET {{base}}/prestamos?estado=ACTIVO
+
+### Listar préstamos devueltos
+GET {{base}}/prestamos?estado=DEVUELTO
+
+### Crear un nuevo préstamo
+POST {{base}}/prestamos
+Content-Type: application/json
+
+{
+  "libroId": 1,
+  "socioId": 1,
+  "fechaDevolucion": "2026-11-25"
+}
+### Crear un préstamo
+POST {{base}}/prestamos
+Content-Type: application/json
+
+{
+  "libroId": 1,
+  "socioId": 1,
+  "fechaDevolucion": "2026-11-20"
+}
+### Registrar devolución
+PUT {{base}}/prestamos/1/devolver
+### Intentar devolver nuevamente
+PUT {{base}}/prestamos/1/devolver
