@@ -25,7 +25,8 @@ public class LibroService {
     public Libro buscarPorId(Long id) {
         return libroRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Libro no encontrado"));
+                        HttpStatus.NOT_FOUND,
+                        "Libro no encontrado"));
     }
 
     public Libro crear(Libro libro) {
@@ -40,6 +41,7 @@ public class LibroService {
     }
 
     public Libro actualizar(Long id, Libro datos) {
+
         Libro libro = buscarPorId(id);
 
         if (libroRepository.existsByIsbnAndIdNot(
@@ -61,3 +63,4 @@ public class LibroService {
         libroRepository.delete(libro);
     }
 }
+

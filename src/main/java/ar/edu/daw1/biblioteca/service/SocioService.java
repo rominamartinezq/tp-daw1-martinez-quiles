@@ -2,7 +2,9 @@
 package ar.edu.daw1.biblioteca.service;
 
 import ar.edu.daw1.biblioteca.entity.Socio;
+import ar.edu.daw1.biblioteca.entity.Prestamo;
 import ar.edu.daw1.biblioteca.repository.SocioRepository;
+import ar.edu.daw1.biblioteca.repository.PrestamoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,9 +15,13 @@ import java.util.List;
 public class SocioService {
 
     private final SocioRepository socioRepository;
+    private final PrestamoRepository prestamoRepository;
 
-    public SocioService(SocioRepository socioRepository) {
+    public SocioService(
+            SocioRepository socioRepository,
+            PrestamoRepository prestamoRepository) {
         this.socioRepository = socioRepository;
+        this.prestamoRepository = prestamoRepository;
     }
 
     public List<Socio> listarTodos() {
@@ -29,23 +35,23 @@ public class SocioService {
     }
 
     public Socio crear(Socio socio) {
-
         if (socioRepository.existsByEmail(socio.getEmail())) {
             throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Ya existe un socio con ese email");
+                    HttpStatus.CONFLICT,
+                    "Ya existe un socio con ese email");
         }
 
         return socioRepository.save(socio);
     }
 
     public Socio actualizar(Long id, Socio datos) {
-
         Socio socio = buscarPorId(id);
 
         if (socioRepository.existsByEmailAndIdNot(
                 datos.getEmail(), id)) {
             throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Ya existe otro socio con ese email");
+                    HttpStatus.CONFLICT,
+                    "Ya existe otro socio con ese email");
         }
 
         socio.setNombre(datos.getNombre());
@@ -57,5 +63,11 @@ public class SocioService {
     public void eliminar(Long id) {
         Socio socio = buscarPorId(id);
         socioRepository.delete(socio);
+    }
+
+    // Listar préstamos de un socio
+    public List<Prestamo> listarPrestamos(Long id) {
+        Socio socio = buscarPorId(id);
+        return prestamoRepository.findBySocio(socio);
     }
 }

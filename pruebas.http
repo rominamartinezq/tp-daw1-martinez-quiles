@@ -101,3 +101,160 @@ Content-Type: application/json
 PUT {{base}}/prestamos/1/devolver
 ### Intentar devolver nuevamente
 PUT {{base}}/prestamos/1/devolver
+### Listar préstamos de un socio
+GET http://localhost:8080/api/socios/1/prestamos
+Accept: application/json
+### Listar todos los socios
+GET http://localhost:8080/api/socios
+Accept: application/json
+### Crear un socio
+POST http://localhost:8080/api/socios
+Content-Type: application/json
+
+{
+  "nombre": "Juan Perez",
+  "email": "juan.perez@gmail.com"
+}
+
+### Listar todos los libros
+GET http://localhost:8080/api/libros
+Accept: application/json
+
+{
+  "nombre": "Juan Perez",
+  "email": "juan.perez@gmail.com"
+### Listar todos los libros
+GET http://localhost:8080/api/libros
+Accept: application/json
+
+
+### Crear primer libro
+POST http://localhost:8080/api/libros
+Content-Type: application/json
+
+{
+  "titulo": "El Principito",
+  "autor": "Antoine de Saint-Exupery",
+  "isbn": "9780156012195"
+}
+
+
+### Crear segundo libro
+POST http://localhost:8080/api/libros
+Content-Type: application/json
+
+{
+  "titulo": "Cien años de soledad",
+  "autor": "Gabriel Garcia Marquez",
+  "isbn": "9780307474728"
+}
+
+### Modificar el primer libro
+PUT http://localhost:8080/api/libros/1
+Content-Type: application/json
+
+{
+  "titulo": "El Principito - Edicion especial",
+  "autor": "Antoine de Saint-Exupery",
+  "isbn": "9780156012195"
+}
+
+### Modificar Cien años de soledad
+PUT http://localhost:8080/api/libros/1
+Content-Type: application/json
+
+{
+  "titulo": "Cien años de soledad - Edicion especial",
+  "autor": "Gabriel Garcia Marquez",
+  "isbn": "9780307474728"
+}
+
+### Modificar socio
+PUT http://localhost:8080/api/socios/1
+Content-Type: application/json
+
+{
+  "nombre": "Juan Perez Actualizado",
+  "email": "juan.perez@gmail.com"
+}
+
+### Consultar prestamos del socio
+GET http://localhost:8080/api/socios/1/prestamos
+Accept: application/json
+
+
+### Crear prestamo
+POST http://localhost:8080/api/prestamos
+Content-Type: application/json
+
+{
+  "libroId": 1,
+  "socioId": 1,
+  "fechaDevolucion": "2026-11-20"
+}
+
+
+### Intentar prestar nuevamente el mismo libro
+POST http://localhost:8080/api/prestamos
+Content-Type: application/json
+
+{
+  "libroId": 1,
+  "socioId": 1,
+  "fechaDevolucion": "2026-11-25"
+}
+
+### Marcar prestamo como VENCIDO
+PATCH http://localhost:8080/api/prestamos/1/estado
+Content-Type: application/json
+
+{
+  "estado": "VENCIDO"
+}
+
+### Registrar devolucion
+PATCH http://localhost:8080/api/prestamos/1/estado
+Content-Type: application/json
+
+{
+  "estado": "DEVUELTO"
+}
+
+### Intentar reactivar un prestamo devuelto
+PATCH http://localhost:8080/api/prestamos/1/estado
+Content-Type: application/json
+
+{
+  "estado": "ACTIVO"
+}
+
+### Probar error por ISBN duplicado
+POST http://localhost:8080/api/libros
+Content-Type: application/json
+
+{
+  "titulo": "Libro duplicado",
+  "autor": "Autor de prueba",
+  "isbn": "9780307474728"
+}
+
+### Probar ISBN duplicado
+POST http://localhost:8080/api/libros
+Content-Type: application/json
+
+{
+  "titulo": "Libro duplicado",
+  "autor": "Autor de prueba",
+  "isbn": "9780307474728"
+}
+
+### Probar validación de libro
+POST http://localhost:8080/api/libros
+Content-Type: application/json
+
+{
+  "titulo": "",
+  "autor": "Gabriel Garcia Marquez",
+  "isbn": "9999999999999"
+}
+

@@ -27,6 +27,7 @@ public class PrestamoService {
         this.socioRepository = socioRepository;
     }
 
+    // Crear préstamo
     public Prestamo crear(Long libroId, Long socioId, LocalDate fechaDevolucion) {
 
         Libro libro = libroRepository.findById(libroId)
@@ -79,35 +80,63 @@ public class PrestamoService {
         return prestamoRepository.save(prestamo);
     }
 
+    // Listar todos los préstamos
     public List<Prestamo> listar() {
         return prestamoRepository.findAll();
     }
 
+    // Buscar préstamo por ID
+    public Prestamo buscarPorId(Long id) {
+        return prestamoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Préstamo no encontrado"));
+    }
+
+    // Listar préstamos por estado
     public List<Prestamo> listarPorEstado(EstadoPrestamo estado) {
         return prestamoRepository.findByEstado(estado);
     }
 
+    // Listar préstamos de un socio
     public List<Prestamo> listarPorSocio(Socio socio) {
         return prestamoRepository.findBySocio(socio);
     }
 
-    // Registrar devolución de un préstamo
-    public Prestamo devolver(Long prestamoId) {
+    // Cambiar estado del préstamo
+    public Prestamo cambiarEstado(Long prestamoId, EstadoPrestamo nuevoEstado) {
 
-        Prestamo prestamo = prestamoRepository.findById(prestamoId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Préstamo no encontrado"));
+        Prestamo prestamo = buscarPorId(prestamoId);
 
-        if (prestamo.getEstado() == EstadoPrestamo.DEVUELTO) {
+        if (nuevoEstado == null) {
             throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Este préstamo ya fue devuelto");
+                    HttpStatus.BAD_REQUEST,
+                    "Debe indicar un estado");
         }
 
-        prestamo.setEstado(EstadoPrestamo.DEVUELTO);
+        EstadoPrestamo estadoActual = prestamo.getEstado();
+
+        boolean transicionPermitida =
+                (estadoActual == EstadoPrestamo.ACTIVO &&
+                        (nuevoEstado == EstadoPrestamo.DEVUELTO ||
+                                nuevoEstado == EstadoPrestamo.VENCIDO))
+                        ||
+                        (estadoActual == EstadoPrestamo.VENCIDO &&
+                                nuevoEstado == EstadoPrestamo.DEVUELTO);
+
+        if (!transicionPermitida) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Transición de estado no permitida");
+        }
+
+        prestamo.setEstado(nuevoEstado);
 
         return prestamoRepository.save(prestamo);
     }
-}
 
+    // Registrar devolución
+    public Prestamo devolver(Long prestamoId) {
+        return cambiarEstado(prestamoId, EstadoPrestamo.DEVUELTO);
+    }
+}
